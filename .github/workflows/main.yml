@@ -1,29 +1,24 @@
-name: build openSK
+name: Build OpenSK
 
-on: workflow_dispatch
+on:
+  workflow_dispatch
 
 jobs:
   build:
-    runs-on: debian:stable-slim
+    runs-on: ubuntu-latest
 
     steps:
-      - name: install uuid-runtime
-        run: apt install uuid-runtime
-        
-      - name: install Python3 and pip
-        run: apt install python3 python3-pip
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-      - name: install openSSL
-        run: apt install libssl-dev
-
-      - name: install rustup
+      - name: Install dependencies
         run: |
-          apt install wget
-          wget https://sh.rustup.rs
-          ./rustup-init.sh
+          sudo apt update
+          sudo apt install -y uuid-runtime python3 python3-pip libssl-dev git curl
 
-      - name: install git
-        run: apt install git
+      - name: Install Rust
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
-      - name: clone openSK repository
+      - name: Clone OpenSK repository
         run: git clone https://github.com/google/OpenSK.git
